@@ -41,6 +41,7 @@ class Coleccion():
        except:
            return False
 
+    #Eliminar album
     def dar_album_por_id(self, album_id):
         return session.query(Album).get(album_id).__dict__
 
