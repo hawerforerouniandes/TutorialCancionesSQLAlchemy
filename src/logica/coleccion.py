@@ -8,7 +8,7 @@ class Coleccion():
 
     def __init__(self):
         Base.metadata.create_all(engine)
-
+    #agregar_album
     def agregar_album(self, titulo, anio, descripcion, medio):
         busqueda = session.query(Album).filter(Album.titulo == titulo).all()
         if len(busqueda) == 0:
