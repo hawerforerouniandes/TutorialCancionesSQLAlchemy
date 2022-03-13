@@ -31,7 +31,7 @@ class Coleccion():
             return True
         else:
             return False
-            
+    #eliminar_album   
     def eliminar_album(self, album_id):
        try:
            album = session.query(Album).filter(Album.id == album_id).first()
