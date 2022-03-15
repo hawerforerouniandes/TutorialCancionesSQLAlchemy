@@ -5,7 +5,7 @@ on:
 jobs:
   
   job1:
-    name: Validar create release
+    name: Ejecutar pruebas unitarias
     runs-on: ubuntu-latest
     if: ${{ contains(github.event.head_commit.message, '[release]') }}
     steps:
@@ -40,7 +40,7 @@ jobs:
   
             
   automerge:
-    name: Automerge
+    name: Crear release - merge main
     needs: job1
     runs-on: ubuntu-latest
     steps:
