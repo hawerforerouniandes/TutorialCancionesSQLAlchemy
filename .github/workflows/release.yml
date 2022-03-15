@@ -16,7 +16,6 @@ jobs:
           NUMBER: ${{ github.event.issue.number }}
   job1:
     name: Validar create release
-    needs: pr_commented
     runs-on: ubuntu-latest
     if: ${{ contains(github.event.head_commit.message, '[release]') }}
     steps:
