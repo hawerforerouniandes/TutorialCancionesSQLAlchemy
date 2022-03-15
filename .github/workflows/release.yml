@@ -1,21 +1,22 @@
 name: Release
 on:
-  push:
-    branches:
-      - 'develop'
+  pull_request_target:
+    types:
+      - closed
+    branches: [ develop ]
 jobs:
-  pr_commented:
-    # This job only runs for pull request comments
-    name: PR comment
-    if: ${{ github.event.issue.pull_request }}
+  if_merged:
+    if: github.event.pull_request_target.merged == true
     runs-on: ubuntu-latest
     steps:
-      - run: |
-          echo A comment on PR $NUMBER
-        env:
-          NUMBER: ${{ github.event.issue.number }}
+    - run: |
+        echo The PR was merged
+      env:
+        NUMBER: ${{ github.event.pull_request_target.number }}
+
   job1:
     name: Validar create release
+    needs: create
     runs-on: ubuntu-latest
     if: ${{ contains(github.event.head_commit.message, '[release]') }}
     steps:
