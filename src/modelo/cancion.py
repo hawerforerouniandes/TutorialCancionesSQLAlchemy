@@ -15,7 +15,7 @@ class Cancion(Base):
     albumes = relationship('Album', secondary='album_cancion')
     interpretes = relationship('Interprete', cascade='all, delete, delete-orphan')
 
-#AlbumCancion merge 2 1
+#AlbumCancion merge 2 1 2 d
 class AlbumCancion(Base):
     __tablename__ = 'album_cancion'
 
