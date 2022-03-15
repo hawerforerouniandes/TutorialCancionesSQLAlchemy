@@ -3,25 +3,9 @@ on:
   push:
     branches: [ develop ]
 jobs:
-  date:
-    name: Example
-    runs-on: ubuntu-latest
-    steps:
-      - name: Get current date
-        id: date
-        run: echo "::set-output name=date::$(date +'%Y-%m-%d-%H-%M')"
-      - name: Test with environment variables
-        run: echo $TAG_NAME - $RELEASE_NAME
-        env:
-          TAG_NAME: v-${{ steps.date.outputs.date }}
-          RELEASE_NAME: v-${{ steps.date.outputs.date }}
-      - name: Test with input
-        uses: actions/hello-world-docker-action@master
-        with:
-          who-to-greet: Mona-the-Octocat-${{ steps.date.outputs.date }}
+  
   job1:
     name: Validar create release
-    needs: date
     runs-on: ubuntu-latest
     if: ${{ contains(github.event.head_commit.message, '[release]') }}
     steps:
@@ -53,26 +37,30 @@ jobs:
         run: |
             coverage run -m unittest discover -s tests -v
             coverage report -m
-  create:
-    name: Create
+  
+            
+  automerge:
+    name: Automerge
     needs: job1
     runs-on: ubuntu-latest
     steps:
+      - name: Get current date
+        id: date
+        run: echo "::set-output name=date::$(date +'%Y-%m-%d-%H-%M')"
+      - name: Test with environment variables
+        run: echo $TAG_NAME - $RELEASE_NAME
+        env:
+          TAG_NAME: v-${{ steps.date.outputs.date }}
+          RELEASE_NAME: v-${{ steps.date.outputs.date }}
       - name: Checkout de repositorio
         uses: actions/checkout@v2
       - name: Crear rama
         run: |
-            git checkout -b release/${{ jobs.date.steps.date.outputs.date }}
-            git push -f -u origin release/${{ jobs.date.steps.date.outputs.date }}
-            
-  automerge:
-    name: Automerge
-    needs: create
-    runs-on: ubuntu-latest
-    steps:
+            git checkout -b release/${{ steps.date.outputs.date }}
+            git push -f -u origin release/${{ steps.date.outputs.date }}
       - name: Mezcla release -> main
         uses: tukasz/direct-merge-action@master 
         with:
            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-           source-branch: release/${{ jobs.date.steps.date.outputs.date }}
+           source-branch: release/${{ steps.date.outputs.date }}
            target-branch: main
