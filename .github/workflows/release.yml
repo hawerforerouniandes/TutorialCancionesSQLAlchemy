@@ -16,6 +16,7 @@ jobs:
           NUMBER: ${{ github.event.issue.number }}
   job1:
     name: Validar create release
+    needs: pr_commented
     runs-on: ubuntu-latest
     if: ${{ contains(github.event.head_commit.message, '[release]') }}
     steps:
@@ -56,7 +57,7 @@ jobs:
         uses: actions/checkout@v2
       - name: Crear rama
         run: |
-            git checkout -b release/v0.3
+            git checkout -b release/${{github.event.issue.number}}
             git push -f -u origin release/${{github.event.issue.number}}
             
   automerge:
