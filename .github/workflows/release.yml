@@ -1,22 +1,27 @@
 name: Release
 on:
-  pull_request_target:
-    types:
-      - closed
+  push:
     branches: [ develop ]
 jobs:
-  if_merged:
-    if: github.event.pull_request_target.merged == true
+  build:
+    name: Example
     runs-on: ubuntu-latest
     steps:
-    - run: |
-        echo The PR was merged
-      env:
-        NUMBER: ${{ github.event.pull_request_target.number }}
-
+      - name: Get current date
+        id: date
+        run: echo "::set-output name=date::$(date +'%Y-%m-%d')"
+      - name: Test with environment variables
+        run: echo $TAG_NAME - $RELEASE_NAME
+        env:
+          TAG_NAME: nightly-tag-${{ steps.date.outputs.date }}
+          RELEASE_NAME: nightly-release-${{ steps.date.outputs.date }}
+      - name: Test with input
+        uses: actions/hello-world-docker-action@master
+        with:
+          who-to-greet: Mona-the-Octocat-${{ steps.date.outputs.date }}
   job1:
     name: Validar create release
-    needs: create
+    needs: build
     runs-on: ubuntu-latest
     if: ${{ contains(github.event.head_commit.message, '[release]') }}
     steps:
